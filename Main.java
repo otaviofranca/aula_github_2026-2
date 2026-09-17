@@ -7,6 +7,7 @@ public class Main {
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu("Menu Principal", Arrays.asList("Conta", "Cliente", "Operacoes", "Sair"));
 		ClienteCadastro clienteCadastro = new ClienteCadastro();
+		ContaCadastro contaCadastro = new ContaCadastro(clienteCadastro);
 		Scanner scanner = new Scanner(System.in);
 
 		boolean continuar = true;
@@ -14,7 +15,7 @@ public class Main {
 			int selecao = mainMenu.getSelection();
 			switch (selecao) {
 				case 1:
-					System.out.println("Conta foi selecionada");
+					abrirSubmenuConta(contaCadastro, scanner);
 					break;
 				case 2:
 					abrirSubmenuCliente(clienteCadastro, scanner);
@@ -29,6 +30,52 @@ public class Main {
 		}
 
 		System.out.println("Fim");
+	}
+
+	private static void abrirSubmenuConta(ContaCadastro contaCadastro, Scanner scanner) {
+		Menu contaMenu = new Menu("Abertura de Conta", Arrays.asList("Abrir Conta", "Listar Contas", "Voltar"));
+
+		boolean voltar = false;
+		while (!voltar) {
+			int selecao = contaMenu.getSelection();
+			switch (selecao) {
+				case 1:
+					abrirConta(contaCadastro, scanner);
+					break;
+				case 2:
+					listarContas(contaCadastro);
+					break;
+				case 3:
+					voltar = true;
+					break;
+			}
+		}
+	}
+
+	private static void abrirConta(ContaCadastro contaCadastro, Scanner scanner) {
+		System.out.print("ID do cliente: ");
+		String entrada = scanner.nextLine();
+
+		try {
+			int clienteId = Integer.parseInt(entrada.trim());
+			Conta conta = contaCadastro.abrir(clienteId);
+			System.out.println("Conta " + conta.getId() + " aberta com sucesso para o cliente " + conta.getClienteId() + " (saldo inicial: " + conta.getSaldo() + ")");
+		} catch (NumberFormatException e) {
+			System.out.println("Erro ao abrir conta: ID do cliente deve ser um número");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Erro ao abrir conta: " + e.getMessage());
+		}
+	}
+
+	private static void listarContas(ContaCadastro contaCadastro) {
+		List<Conta> contas = contaCadastro.listar();
+		if (contas.isEmpty()) {
+			System.out.println("Nenhuma conta cadastrada.");
+			return;
+		}
+		for (Conta conta : contas) {
+			System.out.println("Conta " + conta.getId() + " - Cliente " + conta.getClienteId() + " - Saldo: " + conta.getSaldo());
+		}
 	}
 
 	private static void abrirSubmenuCliente(ClienteCadastro clienteCadastro, Scanner scanner) {
@@ -74,7 +121,7 @@ public class Main {
 			return;
 		}
 		for (Cliente cliente : clientes) {
-			System.out.println(cliente.getNome() + " - " + cliente.getCpf() + " - " + cliente.getEmail());
+			System.out.println(cliente.getId() + " - " + cliente.getNome() + " - " + cliente.getCpf() + " - " + cliente.getEmail());
 		}
 	}
 
