@@ -9,7 +9,7 @@ public class TransferirConta{
     public String Transferir(Conta conta1, Conta conta2, double saldo){
         double saldo_atual = conta1.getSaldo();
         if (saldo_atual<saldo){
-            registro = "Conta " + conta1 + " com problemas de saldo. Nada foi alterado.";
+            registro = "Conta " + conta1 + " com problemas de saldo. Nada foi alterado. ";
         }else{
             conta1.DebitarSaldo(saldo);
             conta2.CreditarSaldo(saldo);
