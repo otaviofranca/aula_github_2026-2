@@ -1,8 +1,13 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Conta {
 
 	private final int id;
 	private final int clienteId;
 	private double saldo;
+	private final List<String> extrato = new ArrayList<>();
 
 	public Conta(int id, int clienteId) {
 		this.id = id;
@@ -20,5 +25,30 @@ public class Conta {
 
 	public double getSaldo() {
 		return saldo;
+	}
+
+	public void debitarSaldo(double valor) {
+		if (valor <= 0) {
+			throw new IllegalArgumentException("Valor a debitar deve ser maior que zero");
+		}
+		if (valor > saldo) {
+			throw new IllegalArgumentException("Saldo insuficiente na conta " + id);
+		}
+		saldo -= valor;
+	}
+
+	public void creditarSaldo(double valor) {
+		if (valor <= 0) {
+			throw new IllegalArgumentException("Valor a creditar deve ser maior que zero");
+		}
+		saldo += valor;
+	}
+
+	public void registrarExtrato(String registro) {
+		extrato.add(registro);
+	}
+
+	public List<String> getExtrato() {
+		return Collections.unmodifiableList(extrato);
 	}
 }

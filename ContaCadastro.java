@@ -1,11 +1,11 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ContaCadastro {
 
 	private final ClienteCadastro clienteCadastro;
-	private final List<Conta> contas = new ArrayList<>();
+	private final ArrayList<Conta> contasAtivas = new ArrayList<>();
+	private final ArrayList<Conta> contasInativas = new ArrayList<>();
 	private int proximoId = 1;
 
 	public ContaCadastro(ClienteCadastro clienteCadastro) {
@@ -18,12 +18,23 @@ public class ContaCadastro {
 		}
 
 		Conta conta = new Conta(proximoId, clienteId);
-		contas.add(conta);
+		contasAtivas.add(conta);
 		proximoId++;
 		return conta;
 	}
 
 	public List<Conta> listar() {
-		return Collections.unmodifiableList(contas);
+		List<Conta> todas = new ArrayList<>(contasAtivas);
+		todas.addAll(contasInativas);
+		return todas;
+	}
+
+	// Referências reais, não cópias: encerrar/reativar uma conta move o mesmo objeto entre as duas listas.
+	public ArrayList<Conta> getContasAtivas() {
+		return contasAtivas;
+	}
+
+	public ArrayList<Conta> getContasInativas() {
+		return contasInativas;
 	}
 }
