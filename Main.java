@@ -98,14 +98,10 @@ public class Main {
 		
 					case 2:  // encerrar com algumas verificacoes que poderiam ter sido feitas na classe do metodo mas ja fiz assim
 						System.out.println("Conta a ser encerrada: ");
-						String entrada_1 = scanner.nextLine();
+						 entrada_1 = scanner.nextLine();
 						try{
 							int id_conta = Integer.parseInt(entrada_1.trim());
-						}catch (NumberFormatException e) {
-							System.out.println("Erro ao digitar conta: ID e formado por numeros");
-						} catch (IllegalArgumentException e) {
-							System.out.println("Erro ao digitar conta: " + e.getMessage());
-						}
+						
 						EncerrarConta encerrarConta = new EncerrarConta(contaCadastro.getContasAtivas(), contaCadastro.getContasInativas());
 						Conta Conta_E = contaCadastro.buscarPorId(id_conta);
 						if (Conta_E == null){
@@ -113,6 +109,11 @@ public class Main {
 							break;
 						}else{
 							encerrarConta.Encerrar(Conta_E, id_conta);
+						}
+						}catch (NumberFormatException e) {
+							System.out.println("Erro ao digitar conta: ID e formado por numeros");
+						} catch (IllegalArgumentException e) {
+							System.out.println("Erro ao digitar conta: " + e.getMessage());
 						}
 						break;
 		
