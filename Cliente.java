@@ -1,10 +1,11 @@
 public class Cliente {
 
+	private final int id;
 	private final String nome;
 	private final String cpf;
 	private final String email;
 
-	public Cliente(String nome, String cpf, String email) {
+	public Cliente(int id, String nome, String cpf, String email) {
 		if (nome == null || nome.trim().isEmpty()) {
 			throw new IllegalArgumentException("Nome é obrigatório");
 		}
@@ -23,9 +24,14 @@ public class Cliente {
 			throw new IllegalArgumentException("E-mail inválido: " + email);
 		}
 
+		this.id = id;
 		this.nome = nome.trim();
 		this.cpf = cpfNormalizado;
 		this.email = email.trim();
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	public String getNome() {

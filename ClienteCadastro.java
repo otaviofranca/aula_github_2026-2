@@ -5,6 +5,7 @@ import java.util.List;
 public class ClienteCadastro {
 
 	private final List<Cliente> clientes = new ArrayList<>();
+	private int proximoId = 1;
 
 	public Cliente cadastrar(String nome, String cpf, String email) {
 		if (cpf != null) {
@@ -16,9 +17,19 @@ public class ClienteCadastro {
 			}
 		}
 
-		Cliente cliente = new Cliente(nome, cpf, email);
+		Cliente cliente = new Cliente(proximoId, nome, cpf, email);
 		clientes.add(cliente);
+		proximoId++;
 		return cliente;
+	}
+
+	public Cliente buscarPorId(int id) {
+		for (Cliente cliente : clientes) {
+			if (cliente.getId() == id) {
+				return cliente;
+			}
+		}
+		return null;
 	}
 
 	public List<Cliente> listar() {
