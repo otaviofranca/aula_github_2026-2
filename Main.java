@@ -24,6 +24,7 @@ public class Main {
 					break;
 				case 3:
 					System.out.println("Operacoes foi selecionada");
+					 submenuOperacoesConta(contaCadastro, scanner);
 					break;
 				case 4:
 					continuar = false;
