@@ -60,10 +60,12 @@ public class Main {
 			
 			Menu opMenu = new Menu("Operacoes entre contas", Arrays.asList("Transferir","Encerrar conta","Voltar"));
 			boolean voltar = false;
+			
 			while (!voltar){
 				int selecao = opMenu.getSelection();
+				String entrada_1;
 				switch(selecao){
-					String entrada_1;
+					
 					case 1: // transferir com algumas verificacoes que poderiam ter sido feitas na classe do metodo mas ja fiz assim
 		
 						System.out.println("Conta a ser debitada: ");
@@ -72,7 +74,7 @@ public class Main {
 						System.out.println("Conta a ser creditada: ");
 						String entrada_2 = scanner.nextLine();
 						
-						System.out.println("Total a ser transferido: ")
+						System.out.println("Total a ser transferido: ");
 						String entrada_3 = scanner.nextLine();
 						try{
 						int id_conta1 = Integer.parseInt(entrada_1.trim());
@@ -114,7 +116,9 @@ public class Main {
 							System.out.println("Erro ao digitar conta: ID e formado por numeros");
 						} catch (IllegalArgumentException e) {
 							System.out.println("Erro ao digitar conta: " + e.getMessage());
-						}
+						} catch (ContaJaInativa e) {
+    						System.out.println("Erro ao encerrar conta: " + e.getMessage());
+							}
 						break;
 		
 					case 3:

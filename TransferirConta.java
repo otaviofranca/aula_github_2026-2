@@ -13,8 +13,8 @@ public class TransferirConta{
             conta1.debitarSaldo(saldo);
             conta2.creditarSaldo(saldo);
             registro = "Conta " + conta1 + " enviou " + saldo + " para a conta " + conta2;
-            conta1.registrarExtrato(registro)
-            conta2.registrarExtrato(registro)
+            conta1.registrarExtrato(registro);
+            conta2.registrarExtrato(registro);
             
         }
         return registro;
