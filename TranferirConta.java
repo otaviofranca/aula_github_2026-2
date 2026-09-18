@@ -11,11 +11,11 @@ public class TransferirConta{
         if (saldo_atual<saldo){
             registro = "Conta " + conta1 + " com problemas de saldo. Nada foi alterado. ";
         }else{
-            conta1.DebitarSaldo(saldo);
-            conta2.CreditarSaldo(saldo);
+            conta1.debitarSaldo(saldo);
+            conta2.creditarSaldo(saldo);
             registro = "Conta " + conta1 + " enviou " + saldo + " para a conta " + conta2;
-            conta1.RegistrarExtrato(registro)
-            conta2.RegistrarExtrato(registro)
+            conta1.registrarExtrato(registro)
+            conta2.registrarExtrato(registro)
             
         }
         return registro;
