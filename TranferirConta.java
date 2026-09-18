@@ -3,10 +3,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransferirConta{
-
-    private final String registro;
     
     public String Transferir(Conta conta1, Conta conta2, double saldo){
+        String registro;
         double saldo_atual = conta1.getSaldo();
         if (saldo_atual<saldo){
             registro = "Conta " + conta1 + " com problemas de saldo. Nada foi alterado. ";
