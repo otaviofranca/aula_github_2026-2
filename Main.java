@@ -60,7 +60,7 @@ public class Main {
 					if (Conta_E == null){
 						return "Conta nao encontrada.";
 					}else{
-						encerrarConta.Encerrar(Conta_E);
+						encerrarConta.Encerrar(Conta_E, id_conta);
 					}
 					break;
 
