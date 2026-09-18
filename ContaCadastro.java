@@ -29,6 +29,15 @@ public class ContaCadastro {
 		return todas;
 	}
 
+	public Conta buscarPorId(int id) {
+		for (Conta conta : listar()) {
+			if (conta.getId() == id) {
+				return conta;
+			}
+		}
+		return null;
+	}
+
 	// Referências reais, não cópias: encerrar/reativar uma conta move o mesmo objeto entre as duas listas.
 	public ArrayList<Conta> getContasAtivas() {
 		return contasAtivas;
