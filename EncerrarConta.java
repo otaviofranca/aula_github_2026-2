@@ -12,10 +12,10 @@ public class EncerrarConta{
         this.contasAtivas = contasAtivas;
         this.contasInativas = contasInativas; // lembrando que o main vai passar uma referencia na memoria para o objeto do array list
     }
-    public void Encerrar(Conta conta) throws ContaJaInativa{
+    public void Encerrar(Conta conta, int id) throws ContaJaInativa{
             if (contasInativas.contains(conta)){
                 throw new ContaJaInativa("Nao é possivel encerrar a conta: Conta ja inativa.");
-        }
+        }else{
         
         if (contasAtivas.contains(conta)){
             double saldo = conta.getSaldo();
@@ -23,13 +23,12 @@ public class EncerrarConta{
         if (saldo==0){
             contasAtivas.remove(conta);
             contasInativas.add(conta);
-            System.out.println("Foi colocada como Inativa a conta seguinte: " + conta);
+            System.out.println("Foi colocada como Inativa a conta seguinte: " + id);
         }else{
             System.out.println("A conta possui saldo positivo, portanto nao pode se tornar inativa.");
         }
-    }else{
-        System.out.println("A conta nao é uma conta ativa.");
     }
+        }
         
     }
 
