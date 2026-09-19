@@ -8,11 +8,11 @@ public class TransferirConta{
         String registro;
         double saldo_atual = conta1.getSaldo();
         if (saldo_atual<saldo){
-            registro = "Conta " + conta1 + " com problemas de saldo. Nada foi alterado. ";
+            registro = "Conta " + conta1.getId() + " com problemas de saldo. Nada foi alterado. ";
         }else{
             conta1.debitarSaldo(saldo);
             conta2.creditarSaldo(saldo);
-            registro = "Conta " + conta1 + " enviou " + saldo + " para a conta " + conta2;
+            registro = "Conta " + conta1.getId() + " enviou " + saldo + " para a conta " + conta2.getId();
             conta1.registrarExtrato(registro);
             conta2.registrarExtrato(registro);
             
