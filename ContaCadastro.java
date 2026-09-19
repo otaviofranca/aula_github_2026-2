@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ContaCadastro {
@@ -27,6 +28,10 @@ public class ContaCadastro {
 		List<Conta> todas = new ArrayList<>(contasAtivas);
 		todas.addAll(contasInativas);
 		return todas;
+	}
+
+	public List<Conta> listarAtivas() {
+		return Collections.unmodifiableList(contasAtivas);
 	}
 
 	public Conta buscarPorId(int id) {

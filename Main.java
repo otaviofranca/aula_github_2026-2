@@ -53,7 +53,7 @@ public class Main {
 	}
 
 	private static void abrirSubmenuOperacoes(ContaCadastro contaCadastro, Scanner scanner) {
-		Menu operacoesMenu = new Menu("Operacoes", Arrays.asList("Depositar", "Voltar"));
+		Menu operacoesMenu = new Menu("Operacoes", Arrays.asList("Depositar", "Transferir", "Encerrar conta", "Voltar"));
 
 		boolean voltar = false;
 		while (!voltar) {
@@ -63,6 +63,12 @@ public class Main {
 					depositar(contaCadastro, scanner);
 					break;
 				case 2:
+					transferir(contaCadastro, scanner);
+					break;
+				case 3:
+					encerrarConta(contaCadastro, scanner);
+					break;
+				case 4:
 					voltar = true;
 					break;
 			}
@@ -83,6 +89,10 @@ public class Main {
 				System.out.println("Conta nao encontrada: " + contaId);
 				return;
 			}
+			if (!contaEstaAtiva(contaCadastro, conta)) {
+				System.out.println("Nao e possivel depositar em uma conta inativa.");
+				return;
+			}
 
 			conta.depositar(valor);
 			System.out.println("Deposito realizado com sucesso. Saldo atual: " + conta.getSaldo());
@@ -91,6 +101,64 @@ public class Main {
 		} catch (IllegalArgumentException e) {
 			System.out.println("Erro no deposito: " + e.getMessage());
 		}
+	}
+
+	private static void transferir(ContaCadastro contaCadastro, Scanner scanner) {
+		System.out.print("ID da conta de origem: ");
+		String entradaOrigem = scanner.nextLine();
+		System.out.print("ID da conta de destino: ");
+		String entradaDestino = scanner.nextLine();
+		System.out.print("Valor da transferencia: ");
+		String entradaValor = scanner.nextLine();
+
+		try {
+			int contaOrigemId = Integer.parseInt(entradaOrigem.trim());
+			int contaDestinoId = Integer.parseInt(entradaDestino.trim());
+			double valor = Double.parseDouble(entradaValor.trim());
+			Conta origem = contaCadastro.buscarPorId(contaOrigemId);
+			Conta destino = contaCadastro.buscarPorId(contaDestinoId);
+			if (origem == null || destino == null) {
+				System.out.println("Conta de origem ou destino nao encontrada.");
+				return;
+			}
+			if (!contaEstaAtiva(contaCadastro, origem) || !contaEstaAtiva(contaCadastro, destino)) {
+				System.out.println("Nao e possivel transferir usando uma conta inativa.");
+				return;
+			}
+
+			String registro = new TransferirConta().Transferir(origem, destino, valor);
+			System.out.println(registro);
+		} catch (NumberFormatException e) {
+			System.out.println("Erro na transferencia: IDs e valor devem ser numeros.");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Erro na transferencia: " + e.getMessage());
+		}
+	}
+
+	private static void encerrarConta(ContaCadastro contaCadastro, Scanner scanner) {
+		System.out.print("ID da conta a encerrar: ");
+		String entradaConta = scanner.nextLine();
+
+		try {
+			int contaId = Integer.parseInt(entradaConta.trim());
+			Conta conta = contaCadastro.buscarPorId(contaId);
+			if (conta == null) {
+				System.out.println("Conta nao encontrada: " + contaId);
+				return;
+			}
+
+			EncerrarConta encerrarConta = new EncerrarConta(
+					contaCadastro.getContasAtivas(), contaCadastro.getContasInativas());
+			encerrarConta.Encerrar(conta, contaId);
+		} catch (NumberFormatException e) {
+			System.out.println("Erro ao encerrar conta: ID deve ser um numero.");
+		} catch (ContaJaInativa e) {
+			System.out.println("Erro ao encerrar conta: " + e.getMessage());
+		}
+	}
+
+	private static boolean contaEstaAtiva(ContaCadastro contaCadastro, Conta conta) {
+		return contaCadastro.getContasAtivas().contains(conta);
 	}
 
 	private static void abrirConta(ContaCadastro contaCadastro, Scanner scanner) {
@@ -109,7 +177,7 @@ public class Main {
 	}
 
 	private static void listarContas(ContaCadastro contaCadastro) {
-		List<Conta> contas = contaCadastro.listar();
+		List<Conta> contas = contaCadastro.listarAtivas();
 		if (contas.isEmpty()) {
 			System.out.println("Nenhuma conta cadastrada.");
 			return;
