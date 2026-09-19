@@ -33,7 +33,8 @@ public class Main {
 	}
 
 	private static void abrirSubmenuConta(ContaCadastro contaCadastro, Scanner scanner) {
-		Menu contaMenu = new Menu("Abertura de Conta", Arrays.asList("Abrir Conta", "Listar Contas", "Voltar"));
+		Menu contaMenu = new Menu("Abertura de Conta",
+				Arrays.asList("Abrir Conta", "Listar Contas", "Consultar Saldo", "Voltar"));
 
 		boolean voltar = false;
 		while (!voltar) {
@@ -46,6 +47,9 @@ public class Main {
 					listarContas(contaCadastro);
 					break;
 				case 3:
+					consultarSaldo(contaCadastro, scanner);
+					break;
+				case 4:
 					voltar = true;
 					break;
 			}
@@ -53,7 +57,8 @@ public class Main {
 	}
 
 	private static void abrirSubmenuOperacoes(ContaCadastro contaCadastro, Scanner scanner) {
-		Menu operacoesMenu = new Menu("Operacoes", Arrays.asList("Depositar", "Sacar", "Transferir", "Encerrar conta", "Voltar"));
+		Menu operacoesMenu = new Menu("Operacoes",
+				Arrays.asList("Depositar", "Sacar", "Transferir", "Encerrar conta", "Listar Transações", "Voltar"));
 
 		boolean voltar = false;
 		while (!voltar) {
@@ -72,9 +77,53 @@ public class Main {
 					encerrarConta(contaCadastro, scanner);
 					break;
 				case 5:
+					listarTransacoes(contaCadastro, scanner);
+					break;
+				case 6:
 					voltar = true;
 					break;
 			}
+		}
+	}
+
+	// ---------- Issue: Consultar saldo atual de uma conta ----------
+	private static void consultarSaldo(ContaCadastro contaCadastro, Scanner scanner) {
+		System.out.print("ID da conta: ");
+		String entradaConta = scanner.nextLine();
+
+		try {
+			int contaId = Integer.parseInt(entradaConta.trim());
+			ConsultarSaldo consultarSaldo = new ConsultarSaldo(contaCadastro);
+			System.out.println("Saldo atual: " + consultarSaldo.consultar(contaId));
+		} catch (NumberFormatException e) {
+			System.out.println("Erro ao consultar saldo: ID deve ser um numero.");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Erro ao consultar saldo: " + e.getMessage());
+		}
+	}
+
+	// ---------- Issue: Listar transações de uma conta ----------
+	private static void listarTransacoes(ContaCadastro contaCadastro, Scanner scanner) {
+		System.out.print("ID da conta: ");
+		String entradaConta = scanner.nextLine();
+
+		try {
+			int contaId = Integer.parseInt(entradaConta.trim());
+			ListarTransacoes listarTransacoes = new ListarTransacoes(contaCadastro);
+			List<Transacao> transacoes = listarTransacoes.listar(contaId);
+
+			if (transacoes.isEmpty()) {
+				System.out.println("Nenhuma transacao encontrada para esta conta.");
+				return;
+			}
+
+			for (Transacao transacao : transacoes) {
+				System.out.println(transacao);
+			}
+		} catch (NumberFormatException e) {
+			System.out.println("Erro ao listar transacoes: ID deve ser um numero.");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Erro ao listar transacoes: " + e.getMessage());
 		}
 	}
 
