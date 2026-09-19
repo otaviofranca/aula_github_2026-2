@@ -18,6 +18,10 @@ public class Menu {
 	}
 
 	public int getSelection() {
+		return getSelection(new Scanner(System.in));
+	}
+
+	public int getSelection(Scanner scanner) {
 		int op = 0;
 		while (op==0){
 			System.out.println(title+"\n");
@@ -27,8 +31,7 @@ public class Menu {
 			}
 
 			System.out.println("Informe a opcao desejada. ");
-			Scanner s = new Scanner(System.in);
-			String str = s.nextLine();
+			String str = scanner.nextLine();
 			try {
 				op = Integer.parseInt(str);
 			}

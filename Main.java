@@ -12,7 +12,7 @@ public class Main {
 
 		boolean continuar = true;
 		while (continuar) {
-			int selecao = mainMenu.getSelection();
+			int selecao = mainMenu.getSelection(scanner);
 			switch (selecao) {
 				case 1:
 					abrirSubmenuConta(contaCadastro, scanner);
@@ -21,7 +21,7 @@ public class Main {
 					abrirSubmenuCliente(clienteCadastro, scanner);
 					break;
 				case 3:
-					submenuOperacoesConta(contaCadastro, scanner);
+					abrirSubmenuOperacoes(contaCadastro, scanner);
 					break;
 				case 4:
 					continuar = false;
@@ -37,7 +37,7 @@ public class Main {
 
 		boolean voltar = false;
 		while (!voltar) {
-			int selecao = contaMenu.getSelection();
+			int selecao = contaMenu.getSelection(scanner);
 			switch (selecao) {
 				case 1:
 					abrirConta(contaCadastro, scanner);
@@ -52,80 +52,144 @@ public class Main {
 		}
 	}
 
-	private static void submenuOperacoesConta(ContaCadastro contaCadastro, Scanner scanner){
+	private static void abrirSubmenuOperacoes(ContaCadastro contaCadastro, Scanner scanner) {
+		Menu operacoesMenu = new Menu("Operacoes", Arrays.asList("Depositar", "Sacar", "Transferir", "Encerrar conta", "Voltar"));
 
-		Menu opMenu = new Menu("Operacoes entre contas", Arrays.asList("Transferir","Encerrar conta","Voltar"));
 		boolean voltar = false;
-
-		while (!voltar){
-			int selecao = opMenu.getSelection();
-			String entrada_1;
-			switch(selecao){
-
-				case 1: // transferir com algumas verificacoes que poderiam ter sido feitas na classe do metodo mas ja fiz assim
-
-					System.out.println("Conta a ser debitada: ");
-					entrada_1 = scanner.nextLine();
-
-					System.out.println("Conta a ser creditada: ");
-					String entrada_2 = scanner.nextLine();
-
-					System.out.println("Total a ser transferido: ");
-					String entrada_3 = scanner.nextLine();
-					try{
-					int id_conta1 = Integer.parseInt(entrada_1.trim());
-					int id_conta2 = Integer.parseInt(entrada_2.trim());
-					double saldo_transferir = Double.parseDouble(entrada_3.trim());
-
-					Conta Conta_1 = contaCadastro.buscarPorId(id_conta1);
-					Conta Conta_2 = contaCadastro.buscarPorId(id_conta2);
-					if (Conta_1 == null || Conta_2 == null){
-					System.out.println("Alguma conta nao esta cadastrada.");
-						}else{ // nao verificamos se a conta ta inativa ou nao, somente nao cadastrada!! ficar de olho
-
-					TransferirConta transferencia = new TransferirConta();
-					String resultado = transferencia.Transferir(Conta_1, Conta_2, saldo_transferir);
-					System.out.println(resultado);
-						}
-					}catch  (NumberFormatException e) {
-						System.out.println("Erro ao abrir conta: ID do cliente deve ser um número");
-					} catch (IllegalArgumentException e) {
-						System.out.println("Erro ao abrir conta: " + e.getMessage());
-					}	
+		while (!voltar) {
+			int selecao = operacoesMenu.getSelection(scanner);
+			switch (selecao) {
+				case 1:
+					depositar(contaCadastro, scanner);
 					break;
-
-				case 2:  // encerrar com algumas verificacoes que poderiam ter sido feitas na classe do metodo mas ja fiz assim
-					System.out.println("Conta a ser encerrada: ");
-					 entrada_1 = scanner.nextLine();
-					try{
-						int id_conta = Integer.parseInt(entrada_1.trim());
-
-					EncerrarConta encerrarConta = new EncerrarConta(contaCadastro.getContasAtivas(), contaCadastro.getContasInativas());
-					Conta Conta_E = contaCadastro.buscarPorId(id_conta);
-					if (Conta_E == null){
-						System.out.println("Conta nao encontrada");
-						break;
-					}else{
-						encerrarConta.Encerrar(Conta_E, id_conta);
-					}
-					}catch (NumberFormatException e) {
-						System.out.println("Erro ao digitar conta: ID e formado por numeros");
-					} catch (IllegalArgumentException e) {
-						System.out.println("Erro ao digitar conta: " + e.getMessage());
-					} catch (ContaJaInativa e) {
-    						System.out.println("Erro ao encerrar conta: " + e.getMessage());
-						}
+				case 2:
+					sacar(contaCadastro, scanner);
 					break;
-
 				case 3:
+					transferir(contaCadastro, scanner);
+					break;
+				case 4:
+					encerrarConta(contaCadastro, scanner);
+					break;
+				case 5:
 					voltar = true;
 					break;
-
-			}	
-
+			}
 		}
+	}
 
+	private static void depositar(ContaCadastro contaCadastro, Scanner scanner) {
+		System.out.print("ID da conta: ");
+		String entradaConta = scanner.nextLine();
+		System.out.print("Valor do deposito: ");
+		String entradaValor = scanner.nextLine();
 
+		try {
+			int contaId = Integer.parseInt(entradaConta.trim());
+			double valor = Double.parseDouble(entradaValor.trim());
+			Conta conta = contaCadastro.buscarPorId(contaId);
+			if (conta == null) {
+				System.out.println("Conta nao encontrada: " + contaId);
+				return;
+			}
+			if (!contaEstaAtiva(contaCadastro, conta)) {
+				System.out.println("Nao e possivel depositar em uma conta inativa.");
+				return;
+			}
+
+			conta.depositar(valor);
+			System.out.println("Deposito realizado com sucesso. Saldo atual: " + conta.getSaldo());
+		} catch (NumberFormatException e) {
+			System.out.println("Erro no deposito: ID e valor devem ser numeros.");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Erro no deposito: " + e.getMessage());
+		}
+	}
+
+	private static void sacar(ContaCadastro contaCadastro, Scanner scanner) {
+		System.out.print("ID da conta: ");
+		String entradaConta = scanner.nextLine();
+		System.out.print("Valor do saque: ");
+		String entradaValor = scanner.nextLine();
+
+		try {
+			int contaId = Integer.parseInt(entradaConta.trim());
+			double valor = Double.parseDouble(entradaValor.trim());
+			Conta conta = contaCadastro.buscarPorId(contaId);
+			if (conta == null) {
+				System.out.println("Conta nao encontrada: " + contaId);
+				return;
+			}
+			if (!contaEstaAtiva(contaCadastro, conta)) {
+				System.out.println("Nao e possivel sacar de uma conta inativa.");
+				return;
+			}
+
+			conta.sacar(valor);
+			System.out.println("Saque realizado com sucesso. Saldo atual: " + conta.getSaldo());
+		} catch (NumberFormatException e) {
+			System.out.println("Erro no saque: ID e valor devem ser numeros.");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Erro no saque: " + e.getMessage());
+		}
+	}
+
+	private static void transferir(ContaCadastro contaCadastro, Scanner scanner) {
+		System.out.print("ID da conta de origem: ");
+		String entradaOrigem = scanner.nextLine();
+		System.out.print("ID da conta de destino: ");
+		String entradaDestino = scanner.nextLine();
+		System.out.print("Valor da transferencia: ");
+		String entradaValor = scanner.nextLine();
+
+		try {
+			int contaOrigemId = Integer.parseInt(entradaOrigem.trim());
+			int contaDestinoId = Integer.parseInt(entradaDestino.trim());
+			double valor = Double.parseDouble(entradaValor.trim());
+			Conta origem = contaCadastro.buscarPorId(contaOrigemId);
+			Conta destino = contaCadastro.buscarPorId(contaDestinoId);
+			if (origem == null || destino == null) {
+				System.out.println("Conta de origem ou destino nao encontrada.");
+				return;
+			}
+			if (!contaEstaAtiva(contaCadastro, origem) || !contaEstaAtiva(contaCadastro, destino)) {
+				System.out.println("Nao e possivel transferir usando uma conta inativa.");
+				return;
+			}
+
+			String registro = new TransferirConta().Transferir(origem, destino, valor);
+			System.out.println(registro);
+		} catch (NumberFormatException e) {
+			System.out.println("Erro na transferencia: IDs e valor devem ser numeros.");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Erro na transferencia: " + e.getMessage());
+		}
+	}
+
+	private static void encerrarConta(ContaCadastro contaCadastro, Scanner scanner) {
+		System.out.print("ID da conta a encerrar: ");
+		String entradaConta = scanner.nextLine();
+
+		try {
+			int contaId = Integer.parseInt(entradaConta.trim());
+			Conta conta = contaCadastro.buscarPorId(contaId);
+			if (conta == null) {
+				System.out.println("Conta nao encontrada: " + contaId);
+				return;
+			}
+
+			EncerrarConta encerrarConta = new EncerrarConta(
+					contaCadastro.getContasAtivas(), contaCadastro.getContasInativas());
+			encerrarConta.Encerrar(conta, contaId);
+		} catch (NumberFormatException e) {
+			System.out.println("Erro ao encerrar conta: ID deve ser um numero.");
+		} catch (ContaJaInativa e) {
+			System.out.println("Erro ao encerrar conta: " + e.getMessage());
+		}
+	}
+
+	private static boolean contaEstaAtiva(ContaCadastro contaCadastro, Conta conta) {
+		return contaCadastro.getContasAtivas().contains(conta);
 	}
 
 	private static void abrirConta(ContaCadastro contaCadastro, Scanner scanner) {
@@ -144,7 +208,7 @@ public class Main {
 	}
 
 	private static void listarContas(ContaCadastro contaCadastro) {
-		List<Conta> contas = contaCadastro.listar();
+		List<Conta> contas = contaCadastro.listarAtivas();
 		if (contas.isEmpty()) {
 			System.out.println("Nenhuma conta cadastrada.");
 			return;
@@ -159,7 +223,7 @@ public class Main {
 
 		boolean voltar = false;
 		while (!voltar) {
-			int selecao = clienteMenu.getSelection();
+			int selecao = clienteMenu.getSelection(scanner);
 			switch (selecao) {
 				case 1:
 					cadastrarCliente(clienteCadastro, scanner);
