@@ -27,6 +27,15 @@ public class Conta {
 		return saldo;
 	}
 
+	public void depositar(double valor) {
+		if (!Double.isFinite(valor) || valor <= 0) {
+			throw new IllegalArgumentException("Valor do deposito deve ser maior que zero");
+		}
+
+		saldo += valor;
+		registrarExtrato("Deposito: " + valor);
+	}
+
 	public void debitarSaldo(double valor) {
 		if (valor <= 0) {
 			throw new IllegalArgumentException("Valor a debitar deve ser maior que zero");

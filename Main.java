@@ -12,7 +12,7 @@ public class Main {
 
 		boolean continuar = true;
 		while (continuar) {
-			int selecao = mainMenu.getSelection();
+			int selecao = mainMenu.getSelection(scanner);
 			switch (selecao) {
 				case 1:
 					abrirSubmenuConta(contaCadastro, scanner);
@@ -21,7 +21,7 @@ public class Main {
 					abrirSubmenuCliente(clienteCadastro, scanner);
 					break;
 				case 3:
-					System.out.println("Operacoes foi selecionada");
+					abrirSubmenuOperacoes(contaCadastro, scanner);
 					break;
 				case 4:
 					continuar = false;
@@ -37,7 +37,7 @@ public class Main {
 
 		boolean voltar = false;
 		while (!voltar) {
-			int selecao = contaMenu.getSelection();
+			int selecao = contaMenu.getSelection(scanner);
 			switch (selecao) {
 				case 1:
 					abrirConta(contaCadastro, scanner);
@@ -49,6 +49,47 @@ public class Main {
 					voltar = true;
 					break;
 			}
+		}
+	}
+
+	private static void abrirSubmenuOperacoes(ContaCadastro contaCadastro, Scanner scanner) {
+		Menu operacoesMenu = new Menu("Operacoes", Arrays.asList("Depositar", "Voltar"));
+
+		boolean voltar = false;
+		while (!voltar) {
+			int selecao = operacoesMenu.getSelection(scanner);
+			switch (selecao) {
+				case 1:
+					depositar(contaCadastro, scanner);
+					break;
+				case 2:
+					voltar = true;
+					break;
+			}
+		}
+	}
+
+	private static void depositar(ContaCadastro contaCadastro, Scanner scanner) {
+		System.out.print("ID da conta: ");
+		String entradaConta = scanner.nextLine();
+		System.out.print("Valor do deposito: ");
+		String entradaValor = scanner.nextLine();
+
+		try {
+			int contaId = Integer.parseInt(entradaConta.trim());
+			double valor = Double.parseDouble(entradaValor.trim());
+			Conta conta = contaCadastro.buscarPorId(contaId);
+			if (conta == null) {
+				System.out.println("Conta nao encontrada: " + contaId);
+				return;
+			}
+
+			conta.depositar(valor);
+			System.out.println("Deposito realizado com sucesso. Saldo atual: " + conta.getSaldo());
+		} catch (NumberFormatException e) {
+			System.out.println("Erro no deposito: ID e valor devem ser numeros.");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Erro no deposito: " + e.getMessage());
 		}
 	}
 
@@ -83,7 +124,7 @@ public class Main {
 
 		boolean voltar = false;
 		while (!voltar) {
-			int selecao = clienteMenu.getSelection();
+			int selecao = clienteMenu.getSelection(scanner);
 			switch (selecao) {
 				case 1:
 					cadastrarCliente(clienteCadastro, scanner);
