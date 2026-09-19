@@ -53,7 +53,7 @@ public class Main {
 	}
 
 	private static void abrirSubmenuOperacoes(ContaCadastro contaCadastro, Scanner scanner) {
-		Menu operacoesMenu = new Menu("Operacoes", Arrays.asList("Depositar", "Transferir", "Encerrar conta", "Voltar"));
+		Menu operacoesMenu = new Menu("Operacoes", Arrays.asList("Depositar", "Sacar", "Transferir", "Encerrar conta", "Voltar"));
 
 		boolean voltar = false;
 		while (!voltar) {
@@ -63,12 +63,15 @@ public class Main {
 					depositar(contaCadastro, scanner);
 					break;
 				case 2:
-					transferir(contaCadastro, scanner);
+					sacar(contaCadastro, scanner);
 					break;
 				case 3:
-					encerrarConta(contaCadastro, scanner);
+					transferir(contaCadastro, scanner);
 					break;
 				case 4:
+					encerrarConta(contaCadastro, scanner);
+					break;
+				case 5:
 					voltar = true;
 					break;
 			}
@@ -100,6 +103,34 @@ public class Main {
 			System.out.println("Erro no deposito: ID e valor devem ser numeros.");
 		} catch (IllegalArgumentException e) {
 			System.out.println("Erro no deposito: " + e.getMessage());
+		}
+	}
+
+	private static void sacar(ContaCadastro contaCadastro, Scanner scanner) {
+		System.out.print("ID da conta: ");
+		String entradaConta = scanner.nextLine();
+		System.out.print("Valor do saque: ");
+		String entradaValor = scanner.nextLine();
+
+		try {
+			int contaId = Integer.parseInt(entradaConta.trim());
+			double valor = Double.parseDouble(entradaValor.trim());
+			Conta conta = contaCadastro.buscarPorId(contaId);
+			if (conta == null) {
+				System.out.println("Conta nao encontrada: " + contaId);
+				return;
+			}
+			if (!contaEstaAtiva(contaCadastro, conta)) {
+				System.out.println("Nao e possivel sacar de uma conta inativa.");
+				return;
+			}
+
+			conta.sacar(valor);
+			System.out.println("Saque realizado com sucesso. Saldo atual: " + conta.getSaldo());
+		} catch (NumberFormatException e) {
+			System.out.println("Erro no saque: ID e valor devem ser numeros.");
+		} catch (IllegalArgumentException e) {
+			System.out.println("Erro no saque: " + e.getMessage());
 		}
 	}
 

@@ -36,6 +36,15 @@ public class Conta {
 		registrarExtrato("Deposito: " + valor);
 	}
 
+	public void sacar(double valor) {
+		if (!Double.isFinite(valor)) {
+			throw new IllegalArgumentException("Valor do saque deve ser valido");
+		}
+
+		debitarSaldo(valor);
+		registrarExtrato("Saque: " + valor);
+	}
+
 	public void debitarSaldo(double valor) {
 		if (valor <= 0) {
 			throw new IllegalArgumentException("Valor a debitar deve ser maior que zero");
