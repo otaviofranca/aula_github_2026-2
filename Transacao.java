@@ -6,7 +6,8 @@ public class Transacao {
 	public enum Tipo {
 		DEPOSITO,
 		SAQUE,
-		TRANSFERENCIA
+		TRANSFERENCIA_SAIDA,
+		TRANSFERENCIA_ENTRADA
 	}
 
 	private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
