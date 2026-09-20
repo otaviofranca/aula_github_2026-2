@@ -15,7 +15,7 @@ public class Main {
 			int selecao = mainMenu.getSelection(scanner);
 			switch (selecao) {
 				case 1:
-					abrirSubmenuConta(contaCadastro, scanner);
+					abrirSubmenuConta(contaCadastro, clienteCadastro, scanner);
 					break;
 				case 2:
 					abrirSubmenuCliente(clienteCadastro, scanner);
@@ -32,7 +32,7 @@ public class Main {
 		System.out.println("Fim");
 	}
 
-	private static void abrirSubmenuConta(ContaCadastro contaCadastro, Scanner scanner) {
+	private static void abrirSubmenuConta(ContaCadastro contaCadastro, ClienteCadastro clienteCadastro, Scanner scanner) {
 		Menu contaMenu = new Menu("Abertura de Conta",
 				Arrays.asList("Abrir Conta", "Listar Contas", "Consultar Saldo", "Voltar"));
 
@@ -44,7 +44,7 @@ public class Main {
 					abrirConta(contaCadastro, scanner);
 					break;
 				case 2:
-					listarContas(contaCadastro);
+					listarContas(contaCadastro, clienteCadastro);
 					break;
 				case 3:
 					consultarSaldo(contaCadastro, scanner);
@@ -256,14 +256,17 @@ public class Main {
 		}
 	}
 
-	private static void listarContas(ContaCadastro contaCadastro) {
+	private static void listarContas(ContaCadastro contaCadastro, ClienteCadastro clienteCadastro) {
 		List<Conta> contas = contaCadastro.listarAtivas();
 		if (contas.isEmpty()) {
 			System.out.println("Nenhuma conta cadastrada.");
 			return;
 		}
 		for (Conta conta : contas) {
-			System.out.println("Conta " + conta.getId() + " - Cliente " + conta.getClienteId() + " - Saldo: " + conta.getSaldo());
+			Cliente cliente = clienteCadastro.buscarPorId(conta.getClienteId());
+			String nomeCliente = cliente == null ? "Cliente não encontrado" : cliente.getNome();
+			System.out.println("Conta " + conta.getId() + " - " + nomeCliente
+					+ " (ID " + conta.getClienteId() + ") - Saldo: " + conta.getSaldo());
 		}
 	}
 

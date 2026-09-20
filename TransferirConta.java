@@ -15,8 +15,8 @@ public class TransferirConta {
 			registro = "Conta " + conta1.getId() + " enviou " + saldo + " para a conta " + conta2.getId();
 			conta1.registrarExtrato(registro);
 			conta2.registrarExtrato(registro);
-			conta1.registrarTransacao(Transacao.Tipo.TRANSFERENCIA, saldo);
-			conta2.registrarTransacao(Transacao.Tipo.TRANSFERENCIA, saldo);
+			conta1.registrarTransacao(Transacao.Tipo.TRANSFERENCIA_SAIDA, saldo);
+			conta2.registrarTransacao(Transacao.Tipo.TRANSFERENCIA_ENTRADA, saldo);
 		}
 		return registro;
 	}
