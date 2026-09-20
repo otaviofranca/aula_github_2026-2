@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +9,7 @@ public class Conta {
 	private final int clienteId;
 	private double saldo;
 	private final List<String> extrato = new ArrayList<>();
+	private final List<Transacao> transacoes = new ArrayList<>();
 
 	public Conta(int id, int clienteId) {
 		this.id = id;
@@ -34,6 +36,7 @@ public class Conta {
 
 		saldo += valor;
 		registrarExtrato("Deposito: " + valor);
+		registrarTransacao(Transacao.Tipo.DEPOSITO, valor);
 	}
 
 	public void sacar(double valor) {
@@ -43,6 +46,7 @@ public class Conta {
 
 		debitarSaldo(valor);
 		registrarExtrato("Saque: " + valor);
+		registrarTransacao(Transacao.Tipo.SAQUE, valor);
 	}
 
 	public void debitarSaldo(double valor) {
@@ -68,5 +72,15 @@ public class Conta {
 
 	public List<String> getExtrato() {
 		return Collections.unmodifiableList(extrato);
+	}
+
+	// Necessario para a issue "listar transacoes": registra cada movimentacao
+	// com tipo, valor e data. A ordem de insercao ja garante ordem cronologica.
+	public void registrarTransacao(Transacao.Tipo tipo, double valor) {
+		transacoes.add(new Transacao(tipo, valor, LocalDateTime.now()));
+	}
+
+	public List<Transacao> getTransacoes() {
+		return Collections.unmodifiableList(transacoes);
 	}
 }
